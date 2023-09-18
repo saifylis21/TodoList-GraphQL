@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require("apollo-server")
-const databaseClient = require ("../postgres-db/databasepg")
+const AllTasks= require("../postgres-db/databasepg")
 
 const typeDefs = gql`
     type Task {
@@ -8,26 +8,23 @@ const typeDefs = gql`
         done: Boolean
     }
 
+    input NewTaskInput {
+        title: String!
+    }
+
     type Query {
         tasks: [Task]!
     }
-`
 
-databaseClient.connect()
+    type Mutation {
+        newTask(input: NewTaskInput): Task!
+    }
+`
 
 const resolvers = {
     Query: {
         tasks() {
-            return databaseClient.query(`SELECT id, title, done FROM public."todoList";`, (err, res) => {
-                        if(!err) {
-                            console.log(res.rows);
-                            return res.rows;
-                        } else {
-                            console.log(err)
-                        }
-                        databaseClient.end;
-                    })
-
+            return AllTasks()
         }
     }
 }

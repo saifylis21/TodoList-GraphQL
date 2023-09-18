@@ -1,27 +1,26 @@
 const { Client } = require("pg");
 
-const databaseClient = new Client({
-    host: "localhost",
-    user: "postgres",
-    port: 5432,
-    password: "mysecretpassword",
-    database: "postgres"
-})
+async function AllTasks() {
 
-// client.connect();
+    const databaseClient = new Client({
+        host: "localhost",
+        user: "postgres",
+        port: 5432,
+        password: "mysecretpassword",
+        database: "postgres"
+    })
 
-// const dbFunctions = {
-//     AllTasks: client.query(`SELECT id, title, done FROM public."todoList";`, (err, res) => {
-//         if(!err) {
-//             console.log(res.rows);
-//             return res.rows;
-//         } else {
-//             console.log(err)
-//         }
-//         client.end;
-//     })
-// }
+    try {
+        await databaseClient.connect(); // Establish the database connection
+        const queryText = 'SELECT id, title, done FROM public."todoList";';
+        const result = await databaseClient.query(queryText); // Execute the query
+        console.log(result.rows); // Log the query results
+        return result.rows
+    } catch (err) {
+        console.error(err); // Handle any errors
+    } finally {
+        await databaseClient.end(); // Close the database connection
+    }
+}
 
-// module.exports = dbFunctions;
-
-module.exports = databaseClient
+module.exports = AllTasks
