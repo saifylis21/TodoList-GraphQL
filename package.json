@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gqlserver": "node src/gql-server/server.js"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.3",
+    "@apollo/react-hooks": "^4.0.0",
+    "apollo-server": "^3.12.1",
     "autoprefixer": "10.4.15",
     "next": "13.4.19",
+    "pg": "^8.11.3",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
