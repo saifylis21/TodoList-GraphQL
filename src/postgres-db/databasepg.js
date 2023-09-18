@@ -23,4 +23,38 @@ async function AllTasks() {
     }
 }
 
-module.exports = AllTasks
+async function NewTask(title) {
+    const databaseClient = new Client({
+        host: "localhost",
+        user: "postgres",
+        port: 5432,
+        password: "mysecretpassword",
+        database: "postgres"
+    });
+
+    try {
+        await databaseClient.connect(); // Establish the database connection
+
+        // Construct the INSERT query with placeholders
+        const queryText = `
+          INSERT INTO public."todoList" (title)
+          VALUES ($1)
+          RETURNING *;`;
+
+        // Define the values for the placeholders
+        const values = [title];
+
+        // Execute the query with the provided values
+        const result = await databaseClient.query(queryText, values);
+
+        console.log("New record inserted:", result.rows[0]); // Log the inserted record
+        return result.rows[0];
+    } catch (err) {
+        console.error(err); // Handle any errors
+    } finally {
+        await databaseClient.end(); // Close the database connection
+    }
+}
+
+
+module.exports = { AllTasks, NewTask }

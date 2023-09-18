@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require("apollo-server")
-const AllTasks= require("../postgres-db/databasepg")
+const { AllTasks, NewTask } = require("../postgres-db/databasepg")
 
 const typeDefs = gql`
     type Task {
@@ -25,6 +25,12 @@ const resolvers = {
     Query: {
         tasks() {
             return AllTasks()
+        }
+    },
+    Mutation: {
+        newTask(parent, {input}, ctx) {
+            const task = NewTask(input.title)
+            return task
         }
     }
 }
