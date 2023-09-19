@@ -2,6 +2,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import gql_tasks from '@/gql-server/gql';
 import { useState } from 'react';
+import TaskInfo from '@/components/TaskInfo';
 
 function Update() {
   const router = useRouter();
@@ -27,17 +28,17 @@ function Update() {
     })
   }
 
+  let displayTaskInfo = <p>LOADING ...</p>
+
+  if(data && data.getTask) {
+    displayTaskInfo = <TaskInfo title={data.getTask.title} done={data.getTask.done}/>
+  }
+
   return (
     <div className='mt-5 mx-7'>
         <h1 className='font-bold text-3xl mb-5'>Updating Record ID: {id}</h1>
 
-        <h2 className='text-lg'><span className='font-bold'>Title:</span> {data && data.getTask ? data.getTask.title : null}</h2>
-        <h2 className='text-lg'><span className='font-bold'>Done:</span>  {data && data.getTask 
-                    ? data.getTask.done 
-                      ? "✅"
-                      : "⭕️"
-                    : null}
-        </h2>
+        {displayTaskInfo}
 
         <form onSubmit={handleSubmit} className='mt-5'>
             <label className='mr-5'>Title:</label>
