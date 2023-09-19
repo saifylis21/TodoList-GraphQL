@@ -10,6 +10,8 @@ export default function New() {
         {
             update(cache, { data: { newTask } }) {
                 const { tasks } = cache.readQuery({ query: gql_tasks.ALL_TASKS });
+
+                // Insert the new task into the tasks array
                 cache.writeQuery({
                     query: gql_tasks.ALL_TASKS,
                     data: { tasks: tasks.concat([newTask]) }
