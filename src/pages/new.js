@@ -2,6 +2,16 @@ import { useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useState } from 'react'
 
+const ALL_TASKS = gql`
+  query AllTasks {
+    tasks {
+      id
+      title
+      done
+    }
+  }
+`
+
 const NEW_TASK = gql`
   mutation CreateATask($newTask: NewTaskInput!) {
     newTask(input: $newTask) {
@@ -15,9 +25,18 @@ const NEW_TASK = gql`
 export default function New() {
 
     const [newTaskTitle, setNewTaskTitle] = useState("");
-    const [createTask, {data, loading, error}] = useMutation(NEW_TASK)
 
-    console.log(data, loading, error)
+    const [createTask, {data, loading, error}] = useMutation(NEW_TASK,
+        {
+            update(cache, { data: { newTask } }) {
+                const { tasks } = cache.readQuery({ query: ALL_TASKS });
+                cache.writeQuery({
+                    query: ALL_TASKS,
+                    data: { tasks: tasks.concat([newTask]) }
+                })
+            }
+        }
+    );
 
     const handleSubmit = (event) => {
         event.preventDefault();
