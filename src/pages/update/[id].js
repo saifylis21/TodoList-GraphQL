@@ -25,8 +25,6 @@ function Update() {
         done: checked
       } }
     })
-    console.log("updatedTitle:", updatedTitle)
-    console.log("checked:", checked)
   }
 
   return (
