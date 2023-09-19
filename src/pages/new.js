@@ -1,37 +1,17 @@
 import { useMutation } from '@apollo/client'
-import gql from 'graphql-tag'
 import { useState } from 'react'
-
-const ALL_TASKS = gql`
-  query AllTasks {
-    tasks {
-      id
-      title
-      done
-    }
-  }
-`
-
-const NEW_TASK = gql`
-  mutation CreateATask($newTask: NewTaskInput!) {
-    newTask(input: $newTask) {
-      id
-      title
-      done
-    }
-  }
-`
+import gql_tasks from '@/gql-server/gql'
 
 export default function New() {
 
     const [newTaskTitle, setNewTaskTitle] = useState("");
 
-    const [createTask, {data, loading, error}] = useMutation(NEW_TASK,
+    const [createTask, {data, loading, error}] = useMutation(gql_tasks.NEW_TASK,
         {
             update(cache, { data: { newTask } }) {
-                const { tasks } = cache.readQuery({ query: ALL_TASKS });
+                const { tasks } = cache.readQuery({ query: gql_tasks.ALL_TASKS });
                 cache.writeQuery({
-                    query: ALL_TASKS,
+                    query: gql_tasks.ALL_TASKS,
                     data: { tasks: tasks.concat([newTask]) }
                 })
             }

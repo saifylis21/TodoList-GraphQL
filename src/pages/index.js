@@ -1,20 +1,10 @@
 import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
 import Task from '../components/Task';
-
-const ALL_TASKS = gql`
-  query AllTasks {
-    tasks {
-      id
-      title
-      done
-    }
-  }
-`
+import gql_tasks from '../gql-server/gql'
 
 export default function Home() {
 
-  const {data, loading, error} = useQuery(ALL_TASKS);
+  const {data, loading, error} = useQuery(gql_tasks.ALL_TASKS);
 
   let AllTasks = <h1 className='font-bold text-3xl mt-4 text-center'>NO TASKS YET</h1>
 
