@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
+import Task from '../components/Task';
 
 const ALL_TASKS = gql`
   query AllTasks {
@@ -13,24 +14,19 @@ const ALL_TASKS = gql`
 
 export default function Home() {
 
-  const {data, loading} = useQuery(ALL_TASKS);
+  const {data, loading, error} = useQuery(ALL_TASKS);
 
-  let AllTasks = <h1>NO TASKS YET</h1>
+  let AllTasks = <h1 className='font-bold text-3xl mt-4 text-center'>NO TASKS YET</h1>
 
-  if(data) {
-    AllTasks = data.tasks.map(task => (
-      <div key={task.id}>
-        <h1>
-          {task.title}
-        </h1>
-      </div>
-    ))
+  if(data && data.tasks.length != 0) {
+    AllTasks = data.tasks.map(task => <Task key={task.id} {...task} />)
   }
 
   return (
     <>
-      <h1>HI</h1>
-      {AllTasks}
+      <ul className='mx-7'>
+        {AllTasks}
+      </ul>
     </>
   )
 }

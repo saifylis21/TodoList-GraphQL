@@ -15,31 +15,28 @@ const NEW_TASK = gql`
 export default function New() {
 
     const [newTaskTitle, setNewTaskTitle] = useState("");
+    const [createTask, {data, loading, error}] = useMutation(NEW_TASK)
 
-    const [createTask, newTask] = useMutation(NEW_TASK)
-
-    // console.log("LOOOOK", newTask)
-
-    const handleChange = (event) => {
-        console.log(event.target.value);
-        setNewTaskTitle(event.target.value);
-    }
+    console.log(data, loading, error)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         createTask({variables: {newTask: {title: newTaskTitle}}});
+        setNewTaskTitle("")
     }
 
     return (
 
-        <>
-            <h1>NEWWWWWWWWWW</h1>
+        <div className='mt-5 mx-7'>
+            <h1 className='font-bold text-3xl mb-5'>Enter New Task Title Below:</h1>
 
             <form onSubmit={handleSubmit}>
-                <input name="newTaskTitle" value={newTaskTitle} onChange={handleChange}/>
-                <button></button>
+                <input className='py-1 px-2 border-2 border-sky-500' name="newTaskTitle" value={newTaskTitle} onChange={event => setNewTaskTitle(event.target.value)}/>
+                <button className='ml-3 px-2 py-1.5 bg-sky-500 text-base hover:underline'>Enter Task</button>
             </form>
-        </>
+
+            <p className='mt-2'>{loading ? "LOADING" : null}{data && loading == false ? "Task Record Added Successfully" : null}</p>
+        </div>
 
     )
 }
