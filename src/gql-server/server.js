@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require("apollo-server")
-const { AllTasks, NewTask, DeleteTask } = require("../postgres-db/databasepg")
+const { AllTasks, NewTask, DeleteTask, TaskInfo, UpdateTask } = require("../postgres-db/databasepg")
 
 const typeDefs = gql`
     type Task {
@@ -15,14 +15,26 @@ const typeDefs = gql`
     input DeleteTaskInput {
         id: Int!
     }
+    
+    input UpdateTaskInput {
+        id: Int!
+        title: String!
+        done: Boolean!
+    }
+
+    input GetTaskInput {
+        id: Int!
+    }
 
     type Query {
         tasks: [Task]!
+        getTask(input: GetTaskInput!): Task!
     }
 
     type Mutation {
         newTask(input: NewTaskInput!): Task!
         deleteTask(input: DeleteTaskInput!): Task!
+        updateTask(input: UpdateTaskInput!): Task!
     }
 `
 
@@ -30,6 +42,10 @@ const resolvers = {
     Query: {
         tasks() {
             return AllTasks()
+        },
+        getTask(parent, {input}, ctx) {
+            const task = TaskInfo(input.id)
+            return task
         }
     },
     Mutation: {
@@ -38,8 +54,12 @@ const resolvers = {
             return task
         },
         deleteTask(parent, {input}, ctx) {
-            console.log("ID:", input)
             const task = DeleteTask(input.id)
+            return task
+        },
+        updateTask(parent, {input}, ctx) {
+            const task = UpdateTask(input.id, input.title, input.done)
+            console.log(task)
             return task
         }
     }

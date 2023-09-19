@@ -10,6 +10,8 @@ export default function Home() {
 
   if(data && data.tasks.length != 0) {
     AllTasks = data.tasks.map(task => <Task key={task.id} {...task} />)
+  } else if(loading) {
+    AllTasks = <h1>Loading ...</h1>
   }
 
   return (

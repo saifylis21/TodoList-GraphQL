@@ -1,5 +1,6 @@
 import gql_tasks from "@/gql-server/gql";
 import { useMutation } from "@apollo/client";
+import Link from "next/link";
 
 const Task = ({id, title, done}) => {
 
@@ -23,10 +24,11 @@ const Task = ({id, title, done}) => {
                 <h1 className="text-lg">{title}</h1>
                 <p className="ml-2">{done ? "✅" : "⭕️"}</p>
             </div>
+
             <div className="flex">
                 {loading ? <p>{loading ? "LOADING" : null}</p> : (
                     <>
-                        <button className="text-sky-500 mr-5 hover:underline">Edit</button>
+                        <Link className="text-sky-500 mr-5 hover:underline" href={`/update/${encodeURIComponent(id)}`}>Edit</Link>
                         <button 
                             className="text-red-600 hover:underline"
                             onClick={() => deleteTask({variables: {deleteTask: {id: id}}})}

@@ -94,5 +94,84 @@ async function DeleteTask(id) {
     }
 }
 
+async function TaskInfo(id) {
+    const databaseClient = new Client({
+        host: "localhost",
+        user: "postgres",
+        port: 5432,
+        password: "mysecretpassword",
+        database: "postgres"
+    });
 
-module.exports = { AllTasks, NewTask, DeleteTask }
+    try {
+        await databaseClient.connect(); // Establish the database connection
+
+        // Construct the DELETE query with a WHERE clause
+        const queryText = `
+          SELECT id, title, done
+          FROM public."todoList"
+          WHERE id = $1
+          LIMIT 1;`
+
+        // Define the values for the placeholders
+        const values = [id];
+
+        // Execute the query with the provided values
+        const result = await databaseClient.query(queryText, values);
+
+        if (result.rowCount === 1) {
+            console.log("Record Found:", result.rows[0]); // Log the deleted record
+            return result.rows[0];
+        } else {
+            console.log("No record found with the provided id:", id);
+            return null;
+        }
+    } catch (err) {
+        console.error(err); // Handle any errors
+    } finally {
+        await databaseClient.end(); // Close the database connection
+    }
+}
+
+async function UpdateTask(id, newTitle, newDone) {
+    const databaseClient = new Client({
+        host: "localhost",
+        user: "postgres",
+        port: 5432,
+        password: "mysecretpassword",
+        database: "postgres"
+    });
+
+    try {
+        await databaseClient.connect(); // Establish the database connection
+
+        // Construct the UPDATE query
+        const queryText = `
+          UPDATE public."todoList"
+          SET title = $1, done = $2
+          WHERE id = $3
+          RETURNING *;`;
+
+        // Define the values for the placeholders
+        const values = [newTitle, newDone, id];
+
+        // Execute the query with the provided values
+        const result = await databaseClient.query(queryText, values);
+
+        if (result.rowCount === 1) {
+            console.log("Record Updated:", result.rows[0]); // Log the deleted record
+            return result.rows[0];
+        } else {
+            console.log("No record found with the provided id:", id);
+            return null;
+        }
+    } catch (err) {
+        console.error(err); // Handle any errors
+    } finally {
+        await databaseClient.end(); // Close the database connection
+    }
+}
+
+
+
+module.exports = { AllTasks, NewTask, DeleteTask, TaskInfo, UpdateTask }
