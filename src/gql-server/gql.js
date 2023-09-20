@@ -1,53 +1,56 @@
 import gql from 'graphql-tag'
 
+const TASK_FIELDS = gql`
+  fragment TaskFields on Task {
+    id
+    title
+    done
+  }
+`
+
 const ALL_TASKS = gql`
   query AllTasks {
     tasks {
-      id
-      title
-      done
+      ...TaskFields
     }
   }
+  ${TASK_FIELDS}
 `
 
 const GET_TASK = gql`
   query GetATask($task: GetTaskInput!) {
     getTask(input: $task) {
-      id
-      title
-      done
+      ...TaskFields
     }
   }
+  ${TASK_FIELDS}
 `
 
 const NEW_TASK = gql`
   mutation CreateATask($newTask: NewTaskInput!) {
     newTask(input: $newTask) {
-      id
-      title
-      done
+      ...TaskFields
     }
   }
+  ${TASK_FIELDS}
 `
 
 const DELETE_TASK = gql`
   mutation DeleteATask($deleteTask: DeleteTaskInput!) {
     deleteTask(input: $deleteTask) {
-      id
-      title
-      done
+      ...TaskFields
     }
   }
+  ${TASK_FIELDS}
 `
 
 const UPDATE_TASK = gql`
   mutation UpdateATask($updateTask: UpdateTaskInput!) {
     updateTask(input: $updateTask) {
-      id
-      title
-      done
+      ...TaskFields
     }
   }
+  ${TASK_FIELDS}
 `
 
 const gql_tasks = {
